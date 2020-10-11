@@ -34,31 +34,29 @@ public class CameraController : MonoBehaviour
     {
         if (!Input.GetMouseButtonDown(1)) return;
         if (_camera is null) return;
-        var ray = _camera.ScreenPointToRay(Input.mousePosition);
-        
-        if (!Physics.Raycast(ray, out var hit)) return;
-        _unit.MoveSelectedUnit(hit.point);
+        Vector3 target = GetMousePosition();
+        _unit.MoveSelectedUnit(target);
     }
 
     private void CameraMovement()
     {
         var currentPos = transform.position;
-        if (Input.GetKey(KeyCode.W) || Input.mousePosition.y >= Screen.height - _borderRadius)
+        if (Input.GetAxisRaw("Vertical") > 0 || Input.mousePosition.y >= Screen.height - _borderRadius)
         {
             currentPos.z += _camSpeed * Time.deltaTime;
         }
 
-        if (Input.GetKey(KeyCode.S) || Input.mousePosition.y <= _borderRadius)
+        if (Input.GetAxisRaw("Vertical") < 0|| Input.mousePosition.y <= _borderRadius)
         {
             currentPos.z -= _camSpeed * Time.deltaTime;
         }
 
-        if (Input.GetKey(KeyCode.D) || Input.mousePosition.x >= Screen.width - _borderRadius)
+        if (Input.GetAxisRaw("Horizontal") > 0 || Input.mousePosition.x >= Screen.width - _borderRadius)
         {
             currentPos.x += _camSpeed * Time.deltaTime;
         }
 
-        if (Input.GetKey(KeyCode.A) || Input.mousePosition.x <= _borderRadius)
+        if (Input.GetAxisRaw("Horizontal") < 0 || Input.mousePosition.x <= _borderRadius)
         {
             currentPos.x -= _camSpeed * Time.deltaTime;
         }
@@ -71,5 +69,11 @@ public class CameraController : MonoBehaviour
         currentPos.z = Mathf.Clamp(currentPos.z, -_screenLimit.y, _screenLimit.y);
 
         transform.position = currentPos;
+    }
+
+    public Vector3 GetMousePosition()
+    {
+        var ray = _camera.ScreenPointToRay(Input.mousePosition);
+        return Physics.Raycast(ray, out var hit) ? hit.point : Vector3.zero;
     }
 }
