@@ -28,7 +28,7 @@ public class CameraController : MonoBehaviour
     {
         if (!Input.GetMouseButtonDown(1)) return;
         if (_camera is null) return;
-        Vector3 target = GetMousePosition();
+        var target = GetMousePosition();
         //_unit.MoveSelectedUnit(target);
     }
 

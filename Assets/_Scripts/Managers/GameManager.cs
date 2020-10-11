@@ -1,10 +1,7 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-
     // Mono Singleton
     private static GameManager _instance = null;
     public static GameManager Instance
@@ -14,49 +11,66 @@ public class GameManager : MonoBehaviour
     }
     
     // Variables
-    private CameraController _cameraController;
+    // private CameraController _cameraController;
     
     //Unit selection
-    [SerializeField] private RectTransform _selectionBox;
-    private Vector3 _startPos;
-    private Vector3 _endPos;
+    [SerializeField] private RectTransform _selectionBox = null;
+
+    private Vector2 _initialClickPosition = Vector2.zero;
     
     private void Start()
     {
         if (!_instance) _instance = this;
         else Destroy(gameObject);
 
-        _cameraController = Camera.main.GetComponent<CameraController>();
+        // if (!(Camera.main is null)) _cameraController = Camera.main.GetComponent<CameraController>();
     }
 
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            _startPos = _cameraController.GetMousePosition();
+            _initialClickPosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+            _selectionBox.anchoredPosition = _initialClickPosition;
         }
 
         if (Input.GetMouseButton(0))
         {
             SelectUnits();
         }
-
+        
+        // After we release the mouse button.
         if (Input.GetMouseButtonUp(0))
         {
-            Debug.Log("Start: " + _startPos + " End: " + _endPos);
+            _initialClickPosition = Vector2.zero;
+            _selectionBox.anchoredPosition = Vector2.zero;
+            _selectionBox.sizeDelta = Vector2.zero;
         }
     }
 
-    //Select units
     private void SelectUnits()
     {
-        _endPos = _cameraController.GetMousePosition();
-
-        float width = _endPos.x - _startPos.x;
-        float height = _endPos.z - _startPos.z;
-
-        _selectionBox.sizeDelta = new Vector2(Mathf.Abs(width),Mathf.Abs(height));
-        _selectionBox.anchoredPosition = _startPos + new Vector3(width / 2,0, height / 2);
-
+        // Store the current mouse position in screen space.
+        var currentMousePosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        // How far have we moved the mouse?
+        var difference = currentMousePosition - _initialClickPosition;
+        
+        var startPoint = _initialClickPosition;
+ 
+        // The following code accounts for dragging in various directions.
+        if (difference.x < 0)
+        {
+            startPoint.x = currentMousePosition.x;
+            difference.x = -difference.x;
+        }
+        if (difference.y < 0)
+        {
+            startPoint.y = currentMousePosition.y;
+            difference.y = -difference.y;
+        }
+ 
+        // Set the anchor, width and height every frame.
+        _selectionBox.anchoredPosition = startPoint;
+        _selectionBox.sizeDelta = difference;
     }
 }
