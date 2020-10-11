@@ -12,17 +12,11 @@ public class CameraController : MonoBehaviour
     
     [SerializeField] private float _scrollSpeed = 2;
     [SerializeField] private float _minY = 20, _maxY = 120;
-
-    // [Header("SelectUnits")] 
     
-    
-    // public RectTransform selectionBox = null;
-    // private Vector2 boxStartPos;
-
     private void Start()
     {
         _camera = Camera.main;
-        _unit = GameObject.Find("Unit01").GetComponent<Unit>();
+        //_unit = GameObject.Find("Unit01").GetComponent<Unit>();
     }
 
     private void LateUpdate()
@@ -35,7 +29,7 @@ public class CameraController : MonoBehaviour
         if (!Input.GetMouseButtonDown(1)) return;
         if (_camera is null) return;
         Vector3 target = GetMousePosition();
-        _unit.MoveSelectedUnit(target);
+        //_unit.MoveSelectedUnit(target);
     }
 
     private void CameraMovement()
@@ -62,6 +56,7 @@ public class CameraController : MonoBehaviour
         }
 
         var scroll = Input.GetAxis("Mouse ScrollWheel");
+        
         currentPos.y -= scroll * _scrollSpeed * 100f * Time.deltaTime;
         currentPos.y = Mathf.Clamp(currentPos.y, _minY, _maxY);
 
