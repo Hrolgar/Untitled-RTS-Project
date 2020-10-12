@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private RectTransform _selectionBox = null;
 
     private Vector2 _initialClickPosition = Vector2.zero;
+    private Vector2 _startPoint, _endPoint;
     
     private void Start()
     {
@@ -36,19 +37,23 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetMouseButton(0))
         {
-            SelectUnits();
+            UnitSelectionBox();
         }
         
         // After we release the mouse button.
         if (Input.GetMouseButtonUp(0))
         {
+            Vector2 bounds = new Vector2(_startPoint.x, _endPoint.y);
+            //Debug.Log("StartPos: " + _startPoint + "\n EndPos: " + _endPoint + "\n bounds: " + bounds);
+            SelectUnits(bounds);
             _initialClickPosition = Vector2.zero;
             _selectionBox.anchoredPosition = Vector2.zero;
             _selectionBox.sizeDelta = Vector2.zero;
         }
+        
     }
 
-    private void SelectUnits()
+    private void UnitSelectionBox()
     {
         // Store the current mouse position in screen space.
         var currentMousePosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
@@ -56,6 +61,7 @@ public class GameManager : MonoBehaviour
         var difference = currentMousePosition - _initialClickPosition;
         
         var startPoint = _initialClickPosition;
+        _startPoint = startPoint;
  
         // The following code accounts for dragging in various directions.
         if (difference.x < 0)
@@ -72,5 +78,13 @@ public class GameManager : MonoBehaviour
         // Set the anchor, width and height every frame.
         _selectionBox.anchoredPosition = startPoint;
         _selectionBox.sizeDelta = difference;
+
+        _endPoint = difference;
+        
+    }
+
+    private void SelectUnits(Vector2 boundsPos)
+    {
+        Collider newCollider = new Collider();
     }
 }
