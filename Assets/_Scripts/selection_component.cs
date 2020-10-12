@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class selection_component : MonoBehaviour
+public class Selection_Component : MonoBehaviour
 {
     void Start()
     {

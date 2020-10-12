@@ -12,7 +12,8 @@ public class CameraController : MonoBehaviour
     
     [SerializeField] private float _scrollSpeed = 2;
     [SerializeField] private float _minY = 20, _maxY = 120;
-    
+    [SerializeField] private bool _debugMode = false;
+
     private void Start()
     {
         _camera = Camera.main;
@@ -35,22 +36,22 @@ public class CameraController : MonoBehaviour
     private void CameraMovement()
     {
         var currentPos = transform.position;
-        if (Input.GetAxisRaw("Vertical") > 0 || Input.mousePosition.y >= Screen.height - _borderRadius)
+        if (Input.GetAxisRaw("Vertical") > 0 || (!_debugMode && Input.mousePosition.y >= Screen.height - _borderRadius))
         {
             currentPos.z += _camSpeed * Time.deltaTime;
         }
 
-        if (Input.GetAxisRaw("Vertical") < 0|| Input.mousePosition.y <= _borderRadius)
+        if (Input.GetAxisRaw("Vertical") < 0|| (Input.mousePosition.y <= _borderRadius && !_debugMode))
         {
             currentPos.z -= _camSpeed * Time.deltaTime;
         }
 
-        if (Input.GetAxisRaw("Horizontal") > 0 || Input.mousePosition.x >= Screen.width - _borderRadius)
+        if (Input.GetAxisRaw("Horizontal") > 0 || (Input.mousePosition.x >= Screen.width - _borderRadius && !_debugMode))
         {
             currentPos.x += _camSpeed * Time.deltaTime;
         }
 
-        if (Input.GetAxisRaw("Horizontal") < 0 || Input.mousePosition.x <= _borderRadius)
+        if (Input.GetAxisRaw("Horizontal") < 0 || (Input.mousePosition.x <= _borderRadius && !_debugMode))
         {
             currentPos.x -= _camSpeed * Time.deltaTime;
         }
