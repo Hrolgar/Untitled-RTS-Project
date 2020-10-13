@@ -61,6 +61,8 @@ public class CameraTest : MonoBehaviour
             var dx = (_p2 - _p1).x * _rotateSpeed;
             var dy = (_p2 - _p1).y * _rotateSpeed;
             transform.rotation *= Quaternion.Euler(new Vector3(0,dx,0));
+            // Tilting of the camera up and down, do we like it or not? 
+            transform.GetChild(0).transform.rotation *= Quaternion.Euler(new Vector3(-dy,0,0));
             _p1 = _p2;
         }
         
