@@ -4,7 +4,7 @@ using UnityEngine;
 public class Global_Selection : MonoBehaviour
 {
     private Selected_Dictionary _selectedTable;
-    private RaycastHit hit;
+    private RaycastHit _hit;
 
     private bool _dragSelect = false;
     [SerializeField] private LayerMask _groundLayer = default;
@@ -20,7 +20,12 @@ public class Global_Selection : MonoBehaviour
     private Vector3[] _verts;
     private Vector3[] _vectors;
     
-    private Vector3 p1, p2;
+    private Vector3 _point1, _point2;
+
+    // TODO - Personalize this script further!
+    // TODO - Add Left Control modifier to remove from selection
+    // TODO - Fix being able to select ground - limit selection in general
+    // TODO - Repeated single clicks not responding as expected
     
     void Start()
     {
@@ -31,12 +36,12 @@ public class Global_Selection : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            p1 = Input.mousePosition;
+            _point1 = Input.mousePosition;
         }
 
         if (Input.GetMouseButton(0))
         {
-            if ((p1 - Input.mousePosition).magnitude > 40)
+            if ((_point1 - Input.mousePosition).magnitude > 40)
             {
                 _dragSelect = true;
             }
@@ -46,25 +51,34 @@ public class Global_Selection : MonoBehaviour
         {
             if (!_dragSelect)
             {
-                Ray ray = Camera.main.ScreenPointToRay(p1);
+                Ray ray = Camera.main.ScreenPointToRay(_point1);
 
-                if (Physics.Raycast(ray, out hit, 5000))
+                if (Physics.Raycast(ray, out _hit, 5000))
                 {
-                    if (Input.GetKeyDown(KeyCode.LeftShift)) // Inclusive select
+                    if (Input.GetKey(KeyCode.LeftShift)) // Inclusive select
                     {
-                        _selectedTable.AddSelected(hit.transform.gameObject);
+                        Debug.Log("Leftshift");
+                        _selectedTable.AddSelected(_hit.transform.gameObject);
+                    }
+                    else if (Input.GetKey(KeyCode.LeftControl))
+                    {
+                        _selectedTable.Deselect(_hit.transform.gameObject.GetInstanceID());
                     }
                     else // Exclusive select
                     {
                         _selectedTable.DeselectAll();
-                        _selectedTable.AddSelected(hit.transform.gameObject);
+                        _selectedTable.AddSelected(_hit.transform.gameObject);
                     }
                 }
                 else
                 {
-                    if (Input.GetKeyDown(KeyCode.LeftShift))
+                    if (Input.GetKey(KeyCode.LeftShift))
                     {
                         //Do nothing
+                    }
+                    else if (Input.GetKey(KeyCode.LeftControl))
+                    {
+                        _selectedTable.Deselect(_hit.transform.gameObject.GetInstanceID());
                     }
                     else
                     {
@@ -78,19 +92,19 @@ public class Global_Selection : MonoBehaviour
                 _vectors = new Vector3[4];
                 
                 int i = 0;
-                p2 = Input.mousePosition;
-                _corners = GetBoundingBox(p1, p2);
+                _point2 = Input.mousePosition;
+                _corners = GetBoundingBox(_point1, _point2);
 
                 foreach (var corner in _corners)
                 {
                     //_layerMask = ~_layerMask;
                     Ray ray = Camera.main.ScreenPointToRay(corner);
 
-                    if (Physics.Raycast(ray, out hit, 5000f, _groundLayer))
+                    if (Physics.Raycast(ray, out _hit, 5000f, _groundLayer))
                     {
-                        _verts[i] = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-                        _vectors[i] = ray.origin - hit.point;
-                        Debug.DrawLine(Camera.main.ScreenToWorldPoint(corner), hit.point, Color.red, 1.0f);
+                        _verts[i] = new Vector3(_hit.point.x, _hit.point.y, _hit.point.z);
+                        _vectors[i] = ray.origin - _hit.point;
+                        Debug.DrawLine(Camera.main.ScreenToWorldPoint(corner), _hit.point, Color.red, 1.0f);
                     }
 
                     i++;
@@ -111,20 +125,28 @@ public class Global_Selection : MonoBehaviour
                 Destroy(_selectionBox, 0.02f);
             }
             
+            UnitManager.Instance.SetUnitSelection(_selectedTable);
             _dragSelect = false;
         }
+
     }
 
     private void OnGUI()
     {
         if (_dragSelect)
         {
-            var rect = Utils.GetScreenRect(p1, Input.mousePosition);
+            var rect = Utils.GetScreenRect(_point1, Input.mousePosition);
             Utils.DrawScreenRect(rect, new Color(.8f, .8f, .95f, .25f));
             Utils.DrawScreenRectBorder(rect, 2, new Color(.8f, .8f, .95f, .25f));
         }
     }
+    
+    private void OnTriggerEnter(Collider other)
+    {
+        _selectedTable.AddSelected(other.gameObject);
+    }
 
+    // Logic to create Selection Box
     private Vector2[] GetBoundingBox(Vector2 p1, Vector2 p2)
     {
         Vector2 newP1;
@@ -132,16 +154,16 @@ public class Global_Selection : MonoBehaviour
         Vector2 newP3;
         Vector2 newP4;
 
-        if (p1.x < p2.x) //if p1 is to the left of p2
+        if (p1.x < p2.x) //if _point1 is to the left of _point2
         {
-            if (p1.y > p2.y) // if p1 is above p2
+            if (p1.y > p2.y) // if _point1 is above _point2
             {
                 newP1 = p1;
                 newP2 = new Vector2(p2.x, p1.y);
                 newP3 = new Vector2(p1.x, p2.y);
                 newP4 = p2;
             }
-            else //if p1 is below p2
+            else //if _point1 is below _point2
             {
                 newP1 = new Vector2(p1.x, p2.y);
                 newP2 = p2;
@@ -149,16 +171,16 @@ public class Global_Selection : MonoBehaviour
                 newP4 = new Vector2(p2.x, p1.y);
             }
         }
-        else //if p1 is to the right of p2
+        else //if _point1 is to the right of _point2
         {
-            if (p1.y > p2.y) // if p1 is above p2
+            if (p1.y > p2.y) // if _point1 is above _point2
             {
                 newP1 = new Vector2(p2.x, p1.y);
                 newP2 = p1;
                 newP3 = p2;
                 newP4 = new Vector2(p1.x, p2.y);
             }
-            else //if p1 is below p2
+            else //if _point1 is below _point2
             {
                 newP1 = p2;
                 newP2 = new Vector2(p1.x, p2.y);
@@ -172,7 +194,7 @@ public class Global_Selection : MonoBehaviour
         return corners;
     }
     
-    //generate a mesh from the 4 bottom points
+    // Generate a mesh from the 4 bottom points
     private Mesh GenerateSelectionMesh(Vector3[] corners, Vector3[] vecs)
     {
         Vector3[] verts = new Vector3[8];
@@ -188,15 +210,9 @@ public class Global_Selection : MonoBehaviour
             verts[j] = corners[j - 4] + vecs[j - 4];
         }
 
-        Mesh selectionMesh = new Mesh();
-        selectionMesh.vertices = verts;
-        selectionMesh.triangles = tris;
+        Mesh selectionMesh = new Mesh {vertices = verts, triangles = tris};
 
         return selectionMesh;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        _selectedTable.AddSelected(other.gameObject);
-    }
 }

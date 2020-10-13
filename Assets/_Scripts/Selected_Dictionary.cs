@@ -12,7 +12,7 @@ public class Selected_Dictionary : MonoBehaviour
         {
             selectedTable.Add(id, go);
             go.AddComponent<Selection_Component>();
-            Debug.Log($"Added {id} to selected dict");
+            //Debug.Log($"Added {id} to selected dict");
         }
     }
 

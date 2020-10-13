@@ -31,6 +31,7 @@ public class CameraController : MonoBehaviour
         if (_camera is null) return;
         var target = GetMousePosition();
         //_unit.MoveSelectedUnit(target);
+        UnitManager.Instance.MoveUnits(target);
     }
 
     private void CameraMovement()

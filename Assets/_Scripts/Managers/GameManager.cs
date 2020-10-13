@@ -2,12 +2,15 @@
 
 public class GameManager : MonoBehaviour
 {
-    // Mono Singleton
     private static GameManager _instance = null;
     public static GameManager Instance
     {
         get => _instance;
-        private set => _instance = value;
+        private set
+        {
+            _instance = value;
+            DontDestroyOnLoad(_instance);
+        }
     }
     
     // Variables
@@ -86,5 +89,10 @@ public class GameManager : MonoBehaviour
     private void SelectUnits(Vector2 boundsPos)
     {
         Collider newCollider = new Collider();
+    }
+
+    public void Testscene()
+    {
+        
     }
 }

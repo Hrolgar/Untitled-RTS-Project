@@ -13,12 +13,13 @@ public class Unit : MonoBehaviour
     {
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = _moveSpeed;
-        _agent.speed = _acceleration;
-        _agent.speed = _stoppingDistance;
+        _agent.acceleration = _acceleration;
+        _agent.stoppingDistance = _stoppingDistance;
     }
 
     public void MoveSelectedUnit(Vector3 target)
     {
         _agent.SetDestination(target);
+
     }
 }
