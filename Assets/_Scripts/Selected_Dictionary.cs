@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Selected_Dictionary : MonoBehaviour
 {
-    public Dictionary<int, GameObject> selectedTable = new Dictionary<int, GameObject>();
+    /*public Dictionary<int, GameObject> selectedTable = new Dictionary<int, GameObject>();
 
     public void AddSelected(GameObject go)
     {
@@ -33,5 +33,5 @@ public class Selected_Dictionary : MonoBehaviour
         }
         
         selectedTable.Clear();
-    }
+    }*/
 }

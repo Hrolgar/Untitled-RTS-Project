@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Global_Selection : MonoBehaviour
 {
@@ -23,7 +22,7 @@ public class Global_Selection : MonoBehaviour
     private Vector3 _point1, _point2;
 
     // TODO - Personalize this script further!
-    // TODO - Fix last selection taking move commands while no (visibly) selected units
+    // TODO - Fix last selection taking move commands while no (visibly) selected units - happens on single select only
     // TODO - Fix being able to select ground - limit selection in general
     // TODO - Repeated single clicks not responding as expected - wait a frame or so?
     
@@ -57,16 +56,20 @@ public class Global_Selection : MonoBehaviour
                 {
                     if (Input.GetKey(KeyCode.LeftShift)) // Inclusive select
                     {
-                        _selectedTable.AddSelected(_hit.transform.gameObject);
+                        SelectionManager.Instance.AddSelected(_hit.transform.gameObject);
+                        /*_selectedTable.AddSelected(_hit.transform.gameObject);*/
                     }
                     else if (Input.GetKey(KeyCode.LeftControl)) // Deselect
                     {
-                        _selectedTable.Deselect(_hit.transform.gameObject.GetInstanceID());
+                        SelectionManager.Instance.Deselect(_hit.transform.gameObject.GetInstanceID());
+                        /*_selectedTable.Deselect(_hit.transform.gameObject.GetInstanceID());*/
                     }
                     else // Exclusive select
                     {
-                        _selectedTable.DeselectAll();
-                        _selectedTable.AddSelected(_hit.transform.gameObject);
+                        SelectionManager.Instance.DeselectAll();
+                        SelectionManager.Instance.AddSelected(_hit.transform.gameObject);
+                        /*_selectedTable.DeselectAll();
+                        _selectedTable.AddSelected(_hit.transform.gameObject);*/
                     }
                 }
                 else
@@ -77,7 +80,7 @@ public class Global_Selection : MonoBehaviour
                     }
                     else
                     {
-                        _selectedTable.DeselectAll();
+                        SelectionManager.Instance.DeselectAll();
                     }
                 }
             }
@@ -113,13 +116,13 @@ public class Global_Selection : MonoBehaviour
 
                 if (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.LeftControl))
                 {
-                    _selectedTable.DeselectAll();
+                    SelectionManager.Instance.DeselectAll();
                 }
 
                 Destroy(_selectionBox, 0.02f);
             }
             
-            UnitManager.Instance.SetUnitSelection(_selectedTable);
+            UnitManager.Instance.SetUnitSelection();
             _dragSelect = false;
         }
 
@@ -139,11 +142,11 @@ public class Global_Selection : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftControl))
         {
-            _selectedTable.Deselect(other.gameObject.GetInstanceID());
+            SelectionManager.Instance.Deselect(other.gameObject.GetInstanceID());
         }
         else
         {
-            _selectedTable.AddSelected(other.gameObject);
+            SelectionManager.Instance.AddSelected(other.gameObject);
         }
     }
 

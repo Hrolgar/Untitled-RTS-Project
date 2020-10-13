@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class UnitManager : MonoBehaviour
 {
     public static UnitManager Instance;
-    private Selected_Dictionary _selectedUnits;
+    private Dictionary<int, GameObject> _selectedUnits;
 
     void Start()
     {
@@ -24,19 +25,17 @@ public class UnitManager : MonoBehaviour
         
     }
 
-    public void SetUnitSelection(Selected_Dictionary selectedUnits)
+    public void SetUnitSelection()
     {
-        _selectedUnits = selectedUnits;
+        _selectedUnits = SelectionManager.Instance.selectedTable;
     }
 
     public void MoveUnits(Vector3 target)
     {
-        if (_selectedUnits)
+        if (_selectedUnits.Count <= 0) return;
+        foreach (var unit in SelectionManager.Instance.selectedTable)
         {
-            foreach (var unit in _selectedUnits.selectedTable)
-            {
-                unit.Value.GetComponent<Unit>().MoveSelectedUnit(target);
-            }
+            unit.Value.GetComponent<Unit>().MoveSelectedUnit(target);
         }
     }
 }
