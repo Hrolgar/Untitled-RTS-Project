@@ -15,7 +15,7 @@ public class UnitManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        DontDestroyOnLoad(this.gameObject);
+        //DontDestroyOnLoad(gameObject);
 
     }
 

@@ -23,9 +23,9 @@ public class Global_Selection : MonoBehaviour
     private Vector3 _point1, _point2;
 
     // TODO - Personalize this script further!
-    // TODO - Add Left Control modifier to remove from selection
+    // TODO - Fix last selection taking move commands while no (visibly) selected units
     // TODO - Fix being able to select ground - limit selection in general
-    // TODO - Repeated single clicks not responding as expected
+    // TODO - Repeated single clicks not responding as expected - wait a frame or so?
     
     void Start()
     {
@@ -57,10 +57,9 @@ public class Global_Selection : MonoBehaviour
                 {
                     if (Input.GetKey(KeyCode.LeftShift)) // Inclusive select
                     {
-                        Debug.Log("Leftshift");
                         _selectedTable.AddSelected(_hit.transform.gameObject);
                     }
-                    else if (Input.GetKey(KeyCode.LeftControl))
+                    else if (Input.GetKey(KeyCode.LeftControl)) // Deselect
                     {
                         _selectedTable.Deselect(_hit.transform.gameObject.GetInstanceID());
                     }
@@ -75,10 +74,6 @@ public class Global_Selection : MonoBehaviour
                     if (Input.GetKey(KeyCode.LeftShift))
                     {
                         //Do nothing
-                    }
-                    else if (Input.GetKey(KeyCode.LeftControl))
-                    {
-                        _selectedTable.Deselect(_hit.transform.gameObject.GetInstanceID());
                     }
                     else
                     {
@@ -97,7 +92,6 @@ public class Global_Selection : MonoBehaviour
 
                 foreach (var corner in _corners)
                 {
-                    //_layerMask = ~_layerMask;
                     Ray ray = Camera.main.ScreenPointToRay(corner);
 
                     if (Physics.Raycast(ray, out _hit, 5000f, _groundLayer))
@@ -117,11 +111,11 @@ public class Global_Selection : MonoBehaviour
                 _selectionBox.convex = true;
                 _selectionBox.isTrigger = true;
 
-                if (!Input.GetKey(KeyCode.LeftShift))
+                if (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.LeftControl))
                 {
                     _selectedTable.DeselectAll();
                 }
-                
+
                 Destroy(_selectionBox, 0.02f);
             }
             
@@ -143,7 +137,14 @@ public class Global_Selection : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        _selectedTable.AddSelected(other.gameObject);
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            _selectedTable.Deselect(other.gameObject.GetInstanceID());
+        }
+        else
+        {
+            _selectedTable.AddSelected(other.gameObject);
+        }
     }
 
     // Logic to create Selection Box
