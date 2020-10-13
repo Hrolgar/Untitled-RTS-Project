@@ -8,7 +8,7 @@ public class Selected_Dictionary_youtube_commentersedition : MonoBehaviour
     [SerializeField]
     private Camera _camera;
     [SerializeField]
-    private Selected_Dictionary _selected_Dictionary;
+    private Selected_Dictionary_youtube_commentersedition _selected_Dictionary;
     [SerializeField]
     private RectTransform _uiSelectionBox;
     private Image _uiSelectionImage;

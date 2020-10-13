@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -14,36 +15,49 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float _minY = 20, _maxY = 120;
     private bool _debugMode;
 
+    // Input
+    private float _hInput;
+    private float _vInput;
+    private float _scroll;
+
     private void Start()
     {
         _camera = Camera.main;
         _debugMode = GameManager.Instance.IsDebugMode();
     }
 
+    private void Update()
+    {
+        _hInput = Input.GetAxisRaw("Horizontal");
+        _vInput = Input.GetAxisRaw("Vertical");
+        _scroll = Input.GetAxis("Mouse ScrollWheel");
+    }
+
     private void LateUpdate()
     {
-        CameraPanning();
+        CameraPan();
+        CameraZoom();
     }
     
-    private void CameraPanning()
+    private void CameraPan()
     {
         var currentPos = transform.position;
-        if (Input.GetAxisRaw("Vertical") > 0 || !_debugMode && Input.mousePosition.y >= Screen.height - _borderRadius)
+        if (_vInput > 0 || !_debugMode && Input.mousePosition.y >= Screen.height - _borderRadius)
         {
             currentPos.z += _camSpeed * Time.deltaTime;
         }
 
-        if (Input.GetAxisRaw("Vertical") < 0|| Input.mousePosition.y <= _borderRadius && !_debugMode)
+        if (_vInput < 0|| Input.mousePosition.y <= _borderRadius && !_debugMode)
         {
             currentPos.z -= _camSpeed * Time.deltaTime;
         }
 
-        if (Input.GetAxisRaw("Horizontal") > 0 || Input.mousePosition.x >= Screen.width - _borderRadius && !_debugMode)
+        if (_hInput > 0 || Input.mousePosition.x >= Screen.width - _borderRadius && !_debugMode)
         {
             currentPos.x += _camSpeed * Time.deltaTime;
         }
 
-        if (Input.GetAxisRaw("Horizontal") < 0 || Input.mousePosition.x <= _borderRadius && !_debugMode)
+        if (_hInput < 0 || Input.mousePosition.x <= _borderRadius && !_debugMode)
         {
             currentPos.x -= _camSpeed * Time.deltaTime;
         }
@@ -56,11 +70,12 @@ public class CameraController : MonoBehaviour
 
     private void CameraZoom()
     {
-        var currentPos = transform.position;
-        var scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (_scroll == 0) return;
         
-        currentPos.y -= scroll * _scrollSpeed * 100f * Time.deltaTime;
+        var currentPos = transform.position;
+        currentPos.y -= _scroll * _scrollSpeed * 100f * Time.deltaTime;
         currentPos.y = Mathf.Clamp(currentPos.y, _minY, _maxY);
+        transform.position = currentPos;
     }
     
 

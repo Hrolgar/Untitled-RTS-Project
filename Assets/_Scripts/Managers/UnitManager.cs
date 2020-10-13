@@ -4,7 +4,7 @@ using UnityEngine;
 public class UnitManager : MonoBehaviour
 {
     public static UnitManager Instance;
-    private Dictionary<int, GameObject> _selectedUnits;
+    private Dictionary<int, GameObject> _selectedUnits = new Dictionary<int, GameObject>();
 
     void Start()
     {
@@ -16,14 +16,8 @@ public class UnitManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        //DontDestroyOnLoad(gameObject);
-
     }
 
-    void Update()
-    {
-        
-    }
 
     public void SetUnitSelection()
     {

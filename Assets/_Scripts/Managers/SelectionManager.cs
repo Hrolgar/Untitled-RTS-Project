@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class SelectionManager : MonoSingleton<SelectionManager>
@@ -24,12 +23,10 @@ public class SelectionManager : MonoSingleton<SelectionManager>
         var ray = _mainCam.ScreenPointToRay(Input.mousePosition);
         return Physics.Raycast(ray, out var hit) ? hit.point : Vector3.zero;
     }
-    
-    
 
     public void AddSelected(GameObject go)
     {
-        int id = go.GetInstanceID();
+        var id = go.GetInstanceID();
         if (!selectedTable.ContainsKey(id))
         {
             selectedTable.Add(id, go);

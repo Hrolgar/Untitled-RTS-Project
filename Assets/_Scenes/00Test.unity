@@ -967,7 +967,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1741873115d6b5488c4c057ea3b9435, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _selectionBox: {fileID: 521047277}
+  _debugMode: 0
 --- !u!4 &846126123
 Transform:
   m_ObjectHideFlags: 0
@@ -991,8 +991,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 851814141}
-  - component: {fileID: 851814140}
   - component: {fileID: 851814139}
+  - component: {fileID: 851814142}
   m_Layer: 0
   m_Name: SelectionManager
   m_TagString: Untagged
@@ -1015,18 +1015,6 @@ MonoBehaviour:
   _groundLayer:
     serializedVersion: 2
     m_Bits: 256
---- !u!114 &851814140
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 851814138}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2be98c09134274446aba9b9c7e7801ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &851814141
 Transform:
   m_ObjectHideFlags: 0
@@ -1041,6 +1029,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &851814142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851814138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c5a38245e6cd2c49ab852bf79099bd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &931347301
 GameObject:
   m_ObjectHideFlags: 0
@@ -1325,7 +1325,6 @@ MonoBehaviour:
   _scrollSpeed: 20
   _minY: 20
   _maxY: 120
-  _debugMode: 1
 --- !u!1001 &1050807416
 PrefabInstance:
   m_ObjectHideFlags: 0

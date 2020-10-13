@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 public class Unit : MonoBehaviour
@@ -20,6 +19,5 @@ public class Unit : MonoBehaviour
     public void MoveSelectedUnit(Vector3 target)
     {
         _agent.SetDestination(target);
-
     }
 }
