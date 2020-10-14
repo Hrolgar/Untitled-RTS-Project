@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class Global_Selection : MonoBehaviour
 {
-    private Selected_Dictionary _selectedTable;
     private RaycastHit _hit;
 
     private bool _dragSelect = false;
@@ -23,13 +23,15 @@ public class Global_Selection : MonoBehaviour
     private Vector3 _point1, _point2;
 
     // TODO - Personalize this script further!
-    // TODO - Fix last selection taking move commands while no (visibly) selected units
-    // TODO - Fix being able to select ground - limit selection in general
+    // TODO - Fix last selection taking move commands while no (visibly) selected units - happens on single select only
     // TODO - Repeated single clicks not responding as expected - wait a frame or so?
-    
-    void Start()
+
+    private void Start()
     {
-        _selectedTable = GetComponent<Selected_Dictionary>();
+        if (transform.position != Vector3.zero)
+        {
+            transform.position = Vector3.zero;
+        }
     }
 
     void Update()
@@ -53,20 +55,22 @@ public class Global_Selection : MonoBehaviour
             {
                 Ray ray = Camera.main.ScreenPointToRay(_point1);
 
-                if (Physics.Raycast(ray, out _hit, 5000))
+                if (Physics.Raycast(ray, out _hit, 5000, ~_groundLayer))
                 {
                     if (Input.GetKey(KeyCode.LeftShift)) // Inclusive select
                     {
-                        _selectedTable.AddSelected(_hit.transform.gameObject);
+                        SelectionManager.Instance.AddSelected(_hit.transform.gameObject);
                     }
                     else if (Input.GetKey(KeyCode.LeftControl)) // Deselect
                     {
-                        _selectedTable.Deselect(_hit.transform.gameObject.GetInstanceID());
+                        SelectionManager.Instance.Deselect(_hit.transform.gameObject.GetInstanceID());
                     }
                     else // Exclusive select
                     {
-                        _selectedTable.DeselectAll();
-                        _selectedTable.AddSelected(_hit.transform.gameObject);
+                        /*SelectionManager.Instance.DeselectAll();
+                        SelectionManager.Instance.AddSelected(_hit.transform.gameObject);*/
+                        
+                        StartCoroutine(ClearAndReselect(_hit.transform.gameObject)); // Possible other alternative: Check if same - ignore if
                     }
                 }
                 else
@@ -77,7 +81,7 @@ public class Global_Selection : MonoBehaviour
                     }
                     else
                     {
-                        _selectedTable.DeselectAll();
+                        SelectionManager.Instance.DeselectAll();
                     }
                 }
             }
@@ -113,18 +117,23 @@ public class Global_Selection : MonoBehaviour
 
                 if (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.LeftControl))
                 {
-                    _selectedTable.DeselectAll();
+                    SelectionManager.Instance.DeselectAll();
                 }
 
-                Destroy(_selectionBox, 0.02f);
+                Destroy(_selectionBox, 0.02f); // TODO: Replace and reset with setActive variant?
             }
             
-            UnitManager.Instance.SetUnitSelection(_selectedTable);
+            UnitManager.Instance.SetUnitSelection();
             _dragSelect = false;
         }
-
     }
 
+    IEnumerator ClearAndReselect(GameObject go)
+    {
+        SelectionManager.Instance.DeselectAll();
+        yield return null;
+        SelectionManager.Instance.AddSelected(go);
+    }
     private void OnGUI()
     {
         if (_dragSelect)
@@ -139,11 +148,11 @@ public class Global_Selection : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftControl))
         {
-            _selectedTable.Deselect(other.gameObject.GetInstanceID());
+            SelectionManager.Instance.Deselect(other.gameObject.GetInstanceID());
         }
         else
         {
-            _selectedTable.AddSelected(other.gameObject);
+            SelectionManager.Instance.AddSelected(other.gameObject);
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -12,65 +13,94 @@ public class CameraController : MonoBehaviour
     
     [SerializeField] private float _scrollSpeed = 2;
     [SerializeField] private float _minY = 20, _maxY = 120;
-    [SerializeField] private bool _debugMode = false;
+    private bool _debugMode;
+
+    // Input
+    private float _hInput;
+    private float _vInput;
+    private float _scroll;
 
     private void Start()
     {
         _camera = Camera.main;
-        //_unit = GameObject.Find("Unit01").GetComponent<Unit>();
-    }
-
-    private void LateUpdate()
-    {
-        CameraMovement();
+        _debugMode = GameManager.Instance.IsDebugMode();
     }
 
     private void Update()
     {
-        if (!Input.GetMouseButtonDown(1)) return;
-        if (_camera is null) return;
-        var target = GetMousePosition();
-        //_unit.MoveSelectedUnit(target);
-        UnitManager.Instance.MoveUnits(target);
+        _hInput = Input.GetAxisRaw("Horizontal");
+        _vInput = Input.GetAxisRaw("Vertical");
+        _scroll = Input.GetAxis("Mouse ScrollWheel");
     }
 
-    private void CameraMovement()
+    private void LateUpdate()
+    {
+        CameraPan();
+        CameraZoom();
+    }
+    
+    private void CameraPan()
     {
         var currentPos = transform.position;
-        if (Input.GetAxisRaw("Vertical") > 0 || (!_debugMode && Input.mousePosition.y >= Screen.height - _borderRadius))
+        if (_vInput > 0 || !_debugMode && Input.mousePosition.y >= Screen.height - _borderRadius)
         {
             currentPos.z += _camSpeed * Time.deltaTime;
         }
 
-        if (Input.GetAxisRaw("Vertical") < 0|| (Input.mousePosition.y <= _borderRadius && !_debugMode))
+        if (_vInput < 0|| Input.mousePosition.y <= _borderRadius && !_debugMode)
         {
             currentPos.z -= _camSpeed * Time.deltaTime;
         }
 
-        if (Input.GetAxisRaw("Horizontal") > 0 || (Input.mousePosition.x >= Screen.width - _borderRadius && !_debugMode))
+        if (_hInput > 0 || Input.mousePosition.x >= Screen.width - _borderRadius && !_debugMode)
         {
             currentPos.x += _camSpeed * Time.deltaTime;
         }
 
-        if (Input.GetAxisRaw("Horizontal") < 0 || (Input.mousePosition.x <= _borderRadius && !_debugMode))
+        if (_hInput < 0 || Input.mousePosition.x <= _borderRadius && !_debugMode)
         {
             currentPos.x -= _camSpeed * Time.deltaTime;
         }
-
-        var scroll = Input.GetAxis("Mouse ScrollWheel");
         
-        currentPos.y -= scroll * _scrollSpeed * 100f * Time.deltaTime;
-        currentPos.y = Mathf.Clamp(currentPos.y, _minY, _maxY);
-
         currentPos.x = Mathf.Clamp(currentPos.x, -_screenLimit.x, _screenLimit.x);
         currentPos.z = Mathf.Clamp(currentPos.z, -_screenLimit.y, _screenLimit.y);
 
         transform.position = currentPos;
     }
+    
 
-    public Vector3 GetMousePosition()
+    // private void GetCameraRotation()
+    // {
+    //     if (_camera is null) return;
+    //     var ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
+    //     if (!Physics.Raycast(ray, out var hitInfo)) return;
+    //     // Debug.DrawRay(ray.origin, ray.direction * 100, Color.black );
+    //     if (Input.GetKeyDown(KeyCode.Q))
+    //     {
+    //         var target = hitInfo.transform.position;
+    //         transform.RotateAround(target, Vector3.up, 90);
+    //     }
+    //     else if (Input.GetKeyDown(KeyCode.E))
+    //     {
+    //         var target = hitInfo.transform.position;
+    //         transform.RotateAround(target, Vector3.up, -90);
+    //     }
+    // }
+
+    private void CameraZoom()
     {
-        var ray = _camera.ScreenPointToRay(Input.mousePosition);
-        return Physics.Raycast(ray, out var hit) ? hit.point : Vector3.zero;
+        if (_scroll == 0) return;
+        
+        var currentPos = transform.position;
+        currentPos.y -= _scroll * _scrollSpeed * 100f * Time.deltaTime;
+        currentPos.y = Mathf.Clamp(currentPos.y, _minY, _maxY);
+        transform.position = currentPos;
+    }
+    
+
+    // Change Angle
+    private void CameraRotation()
+    {
+        
     }
 }

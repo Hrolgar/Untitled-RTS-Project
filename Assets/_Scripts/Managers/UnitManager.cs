@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class UnitManager : MonoBehaviour
 {
     public static UnitManager Instance;
-    private Selected_Dictionary _selectedUnits;
+    private Dictionary<int, GameObject> _selectedUnits = new Dictionary<int, GameObject>();
 
     void Start()
     {
@@ -15,28 +16,21 @@ public class UnitManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        //DontDestroyOnLoad(gameObject);
-
     }
 
-    void Update()
+
+    public void SetUnitSelection()
     {
-        
+        _selectedUnits = SelectionManager.Instance.GetCurrentSelection();
     }
 
-    public void SetUnitSelection(Selected_Dictionary selectedUnits)
-    {
-        _selectedUnits = selectedUnits;
-    }
-
+    // TODO: Fix stopping issue
     public void MoveUnits(Vector3 target)
     {
-        if (_selectedUnits)
+        if (_selectedUnits.Count <= 0) return;
+        foreach (var unit in _selectedUnits)
         {
-            foreach (var unit in _selectedUnits.selectedTable)
-            {
-                unit.Value.GetComponent<Unit>().MoveSelectedUnit(target);
-            }
+            unit.Value.GetComponent<Unit>().MoveSelectedUnit(target);
         }
     }
 }
