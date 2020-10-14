@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Unit : MonoBehaviour
+public class Unit : MonoBehaviour, IDamagable
 {
     private NavMeshAgent _agent;
     [SerializeField] private float _moveSpeed = 0;
@@ -12,7 +12,9 @@ public class Unit : MonoBehaviour
 
     private bool _lookForTargetActive = true;
     [SerializeField] private GameObject _shotPrefab = null;
-    
+
+    public int Health { get; set; } = 100;
+
     private void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
@@ -33,6 +35,16 @@ public class Unit : MonoBehaviour
         {
             StartCoroutine(BangBang());
         }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            Damage();
+        }
+    }
+
+    public void Damage()
+    {
+        Health -= 10;
     }
 
     private bool LocateTarget()

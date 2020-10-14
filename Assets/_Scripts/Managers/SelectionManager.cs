@@ -6,6 +6,8 @@ public class SelectionManager : MonoSingleton<SelectionManager>
     private Camera _mainCam;
     private Dictionary<int, GameObject> _selectedTable = new Dictionary<int, GameObject>();
     
+    //TODO: Storing selections to groups
+    
     protected override void Init()
     {
         _mainCam = Camera.main;
