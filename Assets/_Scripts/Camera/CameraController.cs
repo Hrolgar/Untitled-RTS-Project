@@ -61,12 +61,31 @@ public class CameraController : MonoBehaviour
         {
             currentPos.x -= _camSpeed * Time.deltaTime;
         }
-
+        
         currentPos.x = Mathf.Clamp(currentPos.x, -_screenLimit.x, _screenLimit.x);
         currentPos.z = Mathf.Clamp(currentPos.z, -_screenLimit.y, _screenLimit.y);
 
         transform.position = currentPos;
     }
+    
+
+    // private void GetCameraRotation()
+    // {
+    //     if (_camera is null) return;
+    //     var ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
+    //     if (!Physics.Raycast(ray, out var hitInfo)) return;
+    //     // Debug.DrawRay(ray.origin, ray.direction * 100, Color.black );
+    //     if (Input.GetKeyDown(KeyCode.Q))
+    //     {
+    //         var target = hitInfo.transform.position;
+    //         transform.RotateAround(target, Vector3.up, 90);
+    //     }
+    //     else if (Input.GetKeyDown(KeyCode.E))
+    //     {
+    //         var target = hitInfo.transform.position;
+    //         transform.RotateAround(target, Vector3.up, -90);
+    //     }
+    // }
 
     private void CameraZoom()
     {
