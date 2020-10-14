@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class CameraTest : MonoBehaviour
+public class CameraControls : MonoBehaviour
 {
     private Camera _camera;
     
