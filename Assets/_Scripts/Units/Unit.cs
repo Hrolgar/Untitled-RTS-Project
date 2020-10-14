@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using UnityEngine;
 using UnityEngine.AI;
 
 public class Unit : MonoBehaviour
@@ -8,6 +10,9 @@ public class Unit : MonoBehaviour
     [SerializeField] private float _acceleration = 0;
     [SerializeField] private float _stoppingDistance = 0;
 
+    private bool _lookForTargetActive = true;
+    [SerializeField] private GameObject _shotPrefab = null;
+    
     private void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
@@ -19,5 +24,40 @@ public class Unit : MonoBehaviour
     public void MoveSelectedUnit(Vector3 target)
     {
         _agent.SetDestination(target);
+    }
+
+    private void Update()
+    {
+        if (!_lookForTargetActive) return;
+        if (LocateTarget())
+        {
+            StartCoroutine(BangBang());
+        }
+    }
+
+    private bool LocateTarget()
+    {
+        Ray ray = new Ray(transform.position, transform.forward);
+        Debug.DrawRay(transform.position, transform.forward * 5f, Color.magenta);
+
+        if (Physics.Raycast(ray, out var hit,  5f, ~1<<8))
+        {
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    IEnumerator BangBang()
+    {
+        _lookForTargetActive = false;
+        for (int i = 0; i < 10; i++)
+        {
+            Instantiate(_shotPrefab, transform.position, Quaternion.identity);
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 }

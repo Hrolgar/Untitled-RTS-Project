@@ -21,13 +21,14 @@ public class UnitManager : MonoBehaviour
 
     public void SetUnitSelection()
     {
-        _selectedUnits = SelectionManager.Instance.selectedTable;
+        _selectedUnits = SelectionManager.Instance.GetCurrentSelection();
     }
 
+    // TODO: Fix stopping issue
     public void MoveUnits(Vector3 target)
     {
         if (_selectedUnits.Count <= 0) return;
-        foreach (var unit in SelectionManager.Instance.selectedTable)
+        foreach (var unit in _selectedUnits)
         {
             unit.Value.GetComponent<Unit>().MoveSelectedUnit(target);
         }

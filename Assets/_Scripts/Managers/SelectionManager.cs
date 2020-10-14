@@ -4,7 +4,7 @@ using UnityEngine;
 public class SelectionManager : MonoSingleton<SelectionManager>
 {
     private Camera _mainCam;
-    public Dictionary<int, GameObject> selectedTable = new Dictionary<int, GameObject>();
+    private Dictionary<int, GameObject> _selectedTable = new Dictionary<int, GameObject>();
     
     protected override void Init()
     {
@@ -27,9 +27,9 @@ public class SelectionManager : MonoSingleton<SelectionManager>
     public void AddSelected(GameObject go)
     {
         var id = go.GetInstanceID();
-        if (!selectedTable.ContainsKey(id))
+        if (!_selectedTable.ContainsKey(id))
         {
-            selectedTable.Add(id, go);
+            _selectedTable.Add(id, go);
             go.AddComponent<Selection_Component>();
             //Debug.Log($"Added {id} to selected dict");
         }
@@ -37,23 +37,28 @@ public class SelectionManager : MonoSingleton<SelectionManager>
 
     public void Deselect(int id)
     {
-        if (selectedTable.ContainsKey(id))
+        if (_selectedTable.ContainsKey(id))
         {
-            Destroy(selectedTable[id].GetComponent<Selection_Component>());
-            selectedTable.Remove(id);
+            Destroy(_selectedTable[id].GetComponent<Selection_Component>());
+            _selectedTable.Remove(id);
         }
     }
 
     public void DeselectAll()
     {
-        foreach (var unit in selectedTable)
+        foreach (var unit in _selectedTable)
         {
             if (unit.Value)
             {
-                Destroy(selectedTable[unit.Key].GetComponent<Selection_Component>());
+                Destroy(_selectedTable[unit.Key].GetComponent<Selection_Component>());
             }
         }
         
-        selectedTable.Clear();
+        _selectedTable.Clear();
+    }
+
+    public Dictionary<int, GameObject> GetCurrentSelection()
+    {
+        return _selectedTable;
     }
 }

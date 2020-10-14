@@ -1,14 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Selected_Dictionary_youtube_commentersedition : MonoBehaviour
+public class Refined_Global_Selection : MonoBehaviour
 {
+
+// Previously named Selected_Dictionary_youtubecommenters_edition
+#pragma warning disable 0649
     [SerializeField]
     private Camera _camera;
     [SerializeField]
-    private Selected_Dictionary_youtube_commentersedition _selected_Dictionary;
+    private Dictionary<int, GameObject> _selected_Dictionary;
     [SerializeField]
     private RectTransform _uiSelectionBox;
     private Image _uiSelectionImage;
@@ -22,10 +24,11 @@ public class Selected_Dictionary_youtube_commentersedition : MonoBehaviour
     private Vector3 p1, p2;
     [SerializeField]
     MeshCollider _meshCollider;
+#pragma warning restore 0649
 
     private void Awake()
     {
-        //gets the image so it can be enabled and disabled instead of destroyed for perforamnce reasons.
+        //gets the image so it can be enabled and disabled instead of destroyed for performance reasons.
         _uiSelectionImage = _uiSelectionBox.GetComponent<Image>();
     }
 
@@ -46,20 +49,17 @@ public class Selected_Dictionary_youtube_commentersedition : MonoBehaviour
             UpdateSelectionBox();
             
             if (_isDragSelect)                         //this check serves to fix the odd case in which the quad is so small unity belives its coplanar
-                                                       //Can be moved to OnMouseButtonUp if the performance cost of realtme unit selection is not worth it
+                                                       //Can be moved to OnMouseButtonUp if the performance cost of realtime unit selection is not worth it
             {
                 CastSelectionArea();
             }
-
-
-
         }
         if (Input.GetMouseButtonUp(0))
         {
             DisableSelectionBox();
         }
-
     }
+    
     void UpdateSelectionBox()
     {
         p1 = _uiClickStart;
