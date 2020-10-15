@@ -16,10 +16,14 @@ public class Selection_Component : MonoBehaviour
         var selectionSprite = Resources.Load<Sprite>("Sprites/selected_marker");
         _spriteRenderer.sprite = selectionSprite;
 
+        // Displays healthbar if applicable - currently only does if not at max health
+        transform.GetComponent<Unit>().DisplayHealth(true);
+
     }
 
     void OnDestroy()
     {
+        transform.GetComponent<Unit>().DisplayHealth(false);
         Destroy(_selectedObj);
     }
 }

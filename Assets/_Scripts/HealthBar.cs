@@ -28,7 +28,7 @@ public class HealthBar : MonoBehaviour {
     private void Update() {
         // Only display on partial health
         //if (damageable.CurrentHealth < damageable.MaxHealth) {
-        if (_unit.Health < 100) {
+        if (_unit.CurrentHealth < _unit.MaxHealth) {
             meshRenderer.enabled = true;
             AlignCamera();
             UpdateParams();
@@ -39,7 +39,7 @@ public class HealthBar : MonoBehaviour {
 
     private void UpdateParams() {
         meshRenderer.GetPropertyBlock(matBlock);
-        matBlock.SetFloat("_Fill", _unit.Health / (float)100);
+        matBlock.SetFloat("_Fill", _unit.CurrentHealth / (float)_unit.MaxHealth);
         meshRenderer.SetPropertyBlock(matBlock);
     }
 

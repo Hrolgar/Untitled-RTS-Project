@@ -24,6 +24,11 @@
 [Aa]ssets/[Gg]ame[Dd]ev[Hh][Qq]/[Ff]ile[Bb]ase/[Pp]lugin/
 [Aa]ssets/[Gg]ame[Dd]ev[Hh][Qq]/[Ff]ile[Bb]ase/[Pp]lugin.meta
 
+# Ludiq Peek
+[Aa]ssets/[Ll]udiq*.meta
+[Aa]ssets/[Ll]udiq/
+[Aa]ssets/[Ll]udiq.[Gg]enerated/
+
 # Visual Studio cache directory
 .vs/
 

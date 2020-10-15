@@ -1,12 +1,10 @@
-﻿using UnityEngine;
-
-public interface IDamagable
+﻿public interface IDamagable
 {
     
-    // CurrentHealth and MaxHealth?
-    int Health { get; set; }
+    int MaxHealth { get; set; }
+    int CurrentHealth { get; set; }
     
     // Damage resistance / threshold implementation?
 
-    void Damage();
+    void Damage(int damageAmount);
 }

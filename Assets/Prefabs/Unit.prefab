@@ -19,7 +19,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &563961703232299862
 Transform:
   m_ObjectHideFlags: 0
@@ -241,6 +241,7 @@ MonoBehaviour:
   _moveSpeed: 9
   _acceleration: 8
   _stoppingDistance: 0
+  _healthBar: {fileID: 915745303158282891}
   _shotPrefab: {fileID: 5576361442137896972, guid: af4f766935d520242b513d67f91cbc6a,
     type: 3}
 --- !u!54 &2178638294130751638
