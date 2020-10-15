@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class CameraControls : MonoBehaviour
 {
@@ -45,20 +44,8 @@ public class CameraControls : MonoBehaviour
             scrollSp = _minHeight - transform.position.y;
         }
 
-
-        // if (transform.position.y == _maxHeight)
-        // {
-        //     transform.rotation = Quaternion.Euler(10, 0, 0);
-        // }
-        // else if (transform.position.y == _minHeight)
-        // {
-        //     transform.rotation = Quaternion.Euler(-10, 0, 0);
-        // }
-        // else
-        // {
-        //     transform.rotation = Quaternion.Euler(0, 0, 0);
-        // }
-
+        ZoomTilt();
+        
 
         var verticalMove = new Vector3(0, scrollSp, 0);
         var lateralMove = horizontal * transform.right;
@@ -75,6 +62,7 @@ public class CameraControls : MonoBehaviour
         GetCameraRotation();
     }
 
+    private bool _clicked = false;
     private void GetCameraRotation()
     {
         if (_camera is null) return;
@@ -83,12 +71,12 @@ public class CameraControls : MonoBehaviour
         // Debug.DrawRay(ray.origin, ray.direction * 100, Color.black );
         var target = hitInfo.transform.position;
         bool rotateClockwise;
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && _clicked == false)
         {
             rotateClockwise = true;
             StartCoroutine(Rotate(target, rotateClockwise));
         }
-        else if (Input.GetKeyDown(KeyCode.E))
+        else if (Input.GetKeyDown(KeyCode.E) && _clicked == false)
         {
             rotateClockwise = false;
             StartCoroutine(Rotate(target, rotateClockwise));
@@ -97,10 +85,30 @@ public class CameraControls : MonoBehaviour
 
     private IEnumerator Rotate(Vector3 target, bool rotateClockwise)
     {
+        _clicked = true;
         for (var i = 1; i <= 90; i++)
         {
             transform.RotateAround(target, Vector3.up, rotateClockwise ? 1: -1);
             yield return new WaitForSeconds(_rotateSpeed);
+        }
+        _clicked = false;
+    }
+
+    private void ZoomTilt()
+    {
+        // var ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
+        // if (Physics.Raycast(ray, out var hitInfo, 5000, 1<<8))
+        // {
+        //     var distance = Vector3.Distance(new Vector3(0, hitInfo.transform.position.y, 0),
+        //         new Vector3(0, transform.position.y, 0));
+        //     // Debug.Log(distance + hitInfo.collider.name);
+        //     
+        //
+        // }
+
+        if (transform.position.y >= _maxHeight)
+        {
+            // transform.rotation.x = 70;
         }
     }
 }
